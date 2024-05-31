@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, send_from_directory 
 
 
 def create_app(test_config=None):
@@ -8,7 +8,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, "flaskr.sqlite")
+        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite')
     )
 
     if test_config is None:
@@ -23,6 +23,11 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+    
+    # serve favicon
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(app.root_path, 'favicon.ico', mimetype='image/vnd.microsoft.icon')
     
     # a simple page that says hello
     @app.route('/hello')

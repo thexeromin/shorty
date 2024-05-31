@@ -23,7 +23,7 @@ def shorten_url():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO data (url, key) VALUES (?, ?)",
+                    'INSERT INTO data (url, key) VALUES (?, ?)',
                     (url, key),
                 )
                 db.commit()
@@ -37,10 +37,11 @@ def shorten_url():
         
         flash(error)
 
-    return render_template('index.html')
+    else:
+        return render_template('index.html')
 
 
-@bp.route('/<key>', methods=('GET', 'POST'))
+@bp.route('/<key>', methods=['GET'])
 def get_url(key):
     db = get_db()
     error = None
