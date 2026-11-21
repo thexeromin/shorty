@@ -1,0 +1,56 @@
+extends layout
+
+block content
+  header.page-header
+    h1 Shorty
+    p.text-light A tiny URL shortener. Paste a long link, get a short one.
+
+  article.card
+    header
+      h2 Shorten a URL
+    form(method="post" action="/shorten")
+      fieldset.group
+        input#url(
+          type="url"
+          name="url"
+          placeholder="https://example.com/a/very/long/link"
+          aria-label="URL to shorten"
+          required
+          value=value
+          autofocus
+        )
+        button(type="submit") Shorten
+      if error
+        div(role="alert" data-variant="error")
+          strong Error
+          |  #{error}
+
+  if created
+    div(role="alert" data-variant="success")
+      strong Short link created
+      p
+        a(href=created.shortUrl target="_blank" rel="noopener noreferrer")= created.shortUrl
+        button(type="button" class="small outline" data-copy=created.shortUrl) Copy
+
+  section.link-list
+    h2 Links
+    if links.length === 0
+      p.text-light No links yet. Shorten your first URL above.
+    else
+      div.links-head(aria-hidden="true")
+        span Short link
+        span Original URL
+        span Clicks
+        span Created
+        span
+      ul.links
+        each link in links
+          li.link-row
+            a.link-code(href=link.shortUrl target="_blank" rel="noopener noreferrer")= `/${link.code}`
+            a.link-url(href=link.url target="_blank" rel="noopener noreferrer" title=link.url)= link.url
+            div.link-meta
+              span.link-clicks(data-label="Clicks")
+                span.badge= link.clicks
+              time.link-created(datetime=link.created_at data-label="Created")= link.createdLabel
+            form.link-delete(method="post" action=`/${link.code}/delete` data-delete)
+              button(type="submit" data-variant="danger" class="small") Delete
